@@ -1,0 +1,8 @@
+This game was made during the game jam 2020 (weekend of jan 31 - feb 2)
+
+Link to my portfolio where there is a gameplay video of the game that I have code for here (and also for all my other games):
+
+	https://yosdigital.portfoliobox.net/videogames
+
+
+Note: This game was a team effort, but I was a primary programmer.
