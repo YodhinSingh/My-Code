@@ -1,0 +1,29 @@
+<!-- A to-do list where the user can type some info and add it to the bottom
+of the list. They can also remove the last item or by inputting a number
+they can remove a specific number from the list as well -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title> Todo++ </title>
+  <meta charset="utf-8">
+  <script src="prototype.js"> </script>
+  <script src="task3.js"> </script>
+  <style>
+    ol { width: 200px; height: 200px; background-color: silver; border: 1px solid black; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h1> Todo List++ </h1>
+  <p> Enter item to add:  <br> <input id="input" type="text"> </p>
+  <!-- You need to add in the buttons -->
+  <!-- it is OK if your HTML looks slightly different than the one in the PDF -->
+  <!-- as long as your code can perform the same function -->
+  <button id="add"> Add item </button>
+  <button id="del"> Delete last </button><br>
+  <button id="delnum"> Delete item #: </button>
+  <input id="delchoice" type="text" style= "width:30px"> <br>
+
+  <ol id="list"></ol>
+
+</body>
+</html>

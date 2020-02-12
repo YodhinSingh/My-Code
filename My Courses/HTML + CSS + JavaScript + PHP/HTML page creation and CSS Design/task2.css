@@ -1,0 +1,31 @@
+body {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+#container {
+  border: 5px solid orange;
+  background-color: rgb(253,255,6);
+}
+#header {
+  text-align: center;
+}
+.sections {
+  border: 5px solid orange;
+  background-color: rgb(0,200,255);
+  margin: 10px;
+  overflow: hidden;
+}
+.names {
+  font-family: sans-serif;
+  color: yellow;
+  font-size: 1.25em;
+
+}
+h2{
+  text-align: center;
+}
+img {
+  float:right;
+  padding-right: 10px;
+
+}
