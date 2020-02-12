@@ -1,0 +1,191 @@
+
+package A2;
+
+import java.util.ArrayDeque;
+import java.util.Scanner;
+import java.util.Stack;
+
+/**
+ * This class performs the task of converting a valid RPIE to its
+ * corresponding FPIE and UPPE versions.
+ * 
+ */
+public class Expression {
+	
+	/********* private fields ************************/
+	private Stack<String> valStack;
+	private Stack<Character> bracketStack;
+	private Stack<Character> opStack;
+	private Stack<Character> UPPEStack;
+	
+	
+	/********* default no parameter constructor ************************/
+	public Expression() {
+		valStack = new Stack<String>();
+		bracketStack = new Stack<Character>();
+		opStack = new Stack<Character>();
+		UPPEStack = new Stack<Character>();
+	}
+	
+	/********* main method to test the methods of the class ************************/
+	public static void main(String[] args) {
+		
+		Scanner in = new Scanner(System.in);
+		System.out.println("**************************************************");
+		System.out.println("Type in valid RPIE: ");
+		String value = in.nextLine();
+		Expression ex = new Expression();
+		String convert = "Input RPIE:  " + value + "\n";
+		try {
+			convert += ex.ConvertFPIE(value) + "\n";
+			convert += ex.ConvertUPPE(value);
+		}
+		catch (IllegalArgumentException e) {
+			convert = "This is not a valid RPIE";
+		}
+		
+		System.out.println(convert);
+		System.out.println("**************************************************");
+		
+		in.close();
+	}
+	
+	/**
+	 * This converts an RPIE string to an FPIE.
+	 * 
+	 * @param value RPIE to be converted.
+	 * 
+	 * @return converted FPIE as a string.
+	 * @throws IllegalArgumentException if input RPIE is invalid.
+	 */
+	public String ConvertFPIE(String value) throws IllegalArgumentException {
+		StringBuilder newExpression = new StringBuilder();
+		int startIndex = 0;
+		int numOperators = 0;
+		for (int i = 0; i < value.length(); i++) {
+			char c = value.charAt(i);
+			if (!isBracket(c) && !isOperator(c)) {
+				
+			}
+			else{ 
+				String current = value.substring(startIndex,i);
+				if (isOperator(c)) {
+					opStack.push(c);
+					if (current.length() != 0) {
+						valStack.push(current);
+					}
+					numOperators++;
+					startIndex = i+1;
+				}else {
+					if (isBracket(c)) {
+						bracketStack.push(c);
+					}
+					if (current.length() != 0) {
+						valStack.push(current);
+					}
+					startIndex = i+1;
+					if (!valStack.isEmpty() && !opStack.isEmpty()) {
+						String second = valStack.pop();
+						String first = valStack.pop();
+						String FPIE = "(" + first + opStack.pop() + second + ")";
+						valStack.push(FPIE);
+					}
+				}
+			}
+		}
+		if (bracketStack.size() != numOperators) {
+			throw new IllegalArgumentException();
+		}
+		if(!valStack.isEmpty()) {
+			newExpression.append(valStack.pop());
+		}
+		else if (valStack.isEmpty()) {
+			newExpression.append(value);
+		}
+		
+		return newExpression.insert(0,"Output FPIE: ").toString();
+	}
+	
+	/**
+	 * This converts an RPIE string to an UPPE.
+	 * 
+	 * @param value RPIE to be converted.
+	 * 
+	 * @return converted UPPE as a string.
+	 * @throws IllegalArgumentException if input RPIE is invalid.
+	 */
+	public String ConvertUPPE(String value) throws IllegalArgumentException {
+		char[] expression = value.toCharArray();
+		StringBuilder newExpression = new StringBuilder();
+		
+		for (char c : expression) {
+			
+			if (isOperator(c)) {
+				newExpression.append(" ");
+				UPPEStack.push(c);
+			}
+			else if (isBracket(c) && !UPPEStack.isEmpty()) {
+				newExpression.append(" " + UPPEStack.pop());
+			}
+			else if (isBracket(c) && UPPEStack.isEmpty()) {
+				throw new IllegalArgumentException();
+			}
+			else if (!isOperator(c) && !isBracket(c) && !Character.isWhitespace(c)) {
+				newExpression.append(c);
+			}
+		}
+		if (!UPPEStack.isEmpty()) {
+			throw new IllegalArgumentException();
+		}
+		return  newExpression.insert(0,"Output UPPE: ").toString();
+	}
+	
+	/**
+	 * checks whether input character is a type of bracket.
+	 * 
+	 * @param character to check.
+	 * 
+	 * @return true if character is a type of bracket, false otherwise.
+	 */
+	private boolean isBracket(char c) {
+		if (c == ')' || c == '}' || c == ']') {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * checks whether input character is an operator (defined as not a space, digit,
+	 * letter, '.', or bracket).
+	 * 
+	 * @param character to check.
+	 * 
+	 * @return true if character is an operator, false otherwise.
+	 */
+	private boolean isOperator(char c) {
+		return (c == '+' || c == '-' || c == '/' || c == '*');
+	}
+	
+	/**
+	 * Gives the corresponding bracket to the one currently on the top of the bracketStack.
+	 * 
+	 * @return the opposite bracket to the top of the stack, empty string if stack is empty.
+	 */
+	private String returnBracket() {
+		if (bracketStack.isEmpty()) {
+			return "";
+		}
+		char c = bracketStack.pop();
+		if (c == ')') {
+			return "(";
+		}
+		else if (c == '}') {
+			return "{";
+		}
+		else {
+			return "[";
+		} 
+	}
+	
+
+}

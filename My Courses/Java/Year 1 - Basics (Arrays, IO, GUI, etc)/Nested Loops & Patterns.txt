@@ -1,0 +1,142 @@
+import java.io.PrintStream;
+import java.util.Scanner;
+
+
+public class Question05 {
+
+	public static void main(String[] args) {
+		PrintStream output = System.out;
+		Scanner input = new Scanner(System.in);
+
+		/*
+		 * PART 1:
+		 * 
+		 * Using loop(s), write a program that will cause the following output
+		 * to be displayed
+		 * 
+		 * 0 0 1 0 1 2 0 1 2 3 0 1 2 3 4 0 1 2 3 4 5 0 1 2 3 4 0 1 2 3 0 1 2 0 1
+		 * 0
+		 * 
+		 */
+		output.println("This will print out 0-5 in a pattern. 0, 0 1, 0 1 2, etc till 5 and then back down to 0.");
+		int counter = 0;
+		while (counter<2) {
+			if (counter == 0) {
+				for (int range = 0; range < 6; range++) {
+					for (int nums = 0; nums <= range; nums++){
+						output.print(nums + " ");
+					}
+					output.println("\n");
+				}
+			
+			}
+			if (counter == 1) {
+				for (int range = 4; range > -1; range--) {
+					for (int nums = 0; nums <= range; nums++){
+						output.print(nums + " ");
+					}
+					output.println("\n");
+				}
+			}
+			counter++;
+		}
+		
+
+		/*
+		 * PART 2:
+		 * 
+		 * modify part 1 above to accept two inputs a, b "a" determines the size
+		 * of the output above (i.e. a = 5 in the example from PART 1) "b"
+		 * determines the character that will be displayed
+		 * 
+		 * So for instance, if a=5, and b='$', the output would be:
+		 * 
+		 * $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $
+		 * $
+		 * 
+		 */
+		output.println("\n");
+		output.println("\n");
+		output.println("Your turn. Choose a max value to go up to.");
+		int counter2 = 0;
+		int a = input.nextInt();
+		output.println("Now choose a character to use.");
+		String characterchoice = input.next();
+		char b = characterchoice.charAt(0);
+		while (counter2 < 2) {
+			if (counter2 == 0) {
+				for (int range = 0; range < a+1; range++) {
+					for (int nums = 0; nums <= range; nums++){
+						output.print(b + " ");
+					}
+					output.println("\n");
+				}
+			
+			}
+			if (counter2 == 1) {
+				for (int range = a-1; range > -1; range--) {
+					for (int nums = 0; nums <= range; nums++){
+						output.print(b + " ");
+					}
+					output.println("\n");
+				}
+			}
+			counter2++;
+		}
+		
+
+		/*
+		 * PART 3:
+		 * 
+		 * modify part 2 above, so that the internals of the graphic always
+		 * output the character "."
+		 * 
+		 * So for instance, if a=5, and b='$', the output would be:
+		 * 
+		 * $ $ $ $ . $ $ . . $ $ . . . $ $ . . . . $ $ . . . $ $ . . $ $ . $ $ $
+		 * $
+		 * 
+		 */
+		output.println("\n");
+		output.println("\n");
+		output.println("Final Time. Choose a max value to go up to.");
+		int counter3 = 0;
+		int a2 = input.nextInt();
+		output.println("Now choose a character to use.");
+		String characterchoice2 = input.next();
+		char b2 = characterchoice2.charAt(0);
+		String period = ".";
+		while (counter3 < 2) {
+			if (counter3 == 0) {
+				for (int range = 0; range < a2+1; range++) {
+					if (range != 0) {
+						output.print(b2 + " ");
+					}
+					for (int nums = 0; nums < range-1; nums++){
+						output.print(new String(new char[1]).replace("\0", period) + " ");
+						
+					}
+					output.print(b2 + " ");
+					output.println("\n");
+				}
+			
+			}
+			if (counter3 == 1) {
+				for (int range = a2-1; range > -1; range--) {
+					if (range != 0) {
+						output.print(b2 + " ");
+					}
+					for (int nums = 0; nums < range-1; nums++){
+						output.print(new String(new char[1]).replace("\0", period) + " ");
+					}
+					output.print(b2 + " ");
+					output.println("\n");
+				}
+			}
+			counter3++;
+		}
+		input.close();
+
+	}
+}
+

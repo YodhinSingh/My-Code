@@ -1,0 +1,43 @@
+import java.io.PrintStream;
+import java.util.Scanner;
+import java.util.Random;
+
+
+public class Question04 {
+
+	// This code chooses a random integer between 0 and 1 less than user input. Then the user has to guess within 5 tries.
+
+	public static void main(String[] args) {
+		Random theNumber = new Random();
+		Scanner input = new Scanner(System.in);
+		PrintStream output = System.out;
+		output.println("Choose a random integer.");
+		int myNumber = input.nextInt();
+		int myNewNumber = theNumber.nextInt(myNumber);
+		output.println(
+				"Okay. I have selected a random integer between 0 and 1 less than your chosen integer. Can you guess what it is? You get 5 tries.");
+		int guessedNumber = input.nextInt();
+		int numTry = 5;
+		while ((guessedNumber != myNewNumber) && (numTry > 0)) {
+			numTry--;
+			if (numTry > 1) {
+				output.println("That is the wrong number. Try again.");
+				output.println("You have " + numTry + " tries left.");
+				guessedNumber = input.nextInt();
+			} else {
+				if (numTry > 0) {
+					output.println("That is the wrong number. Try again.");
+					output.println("You have " + numTry + " try left.");
+					guessedNumber = input.nextInt();
+				}
+			}
+		}
+		if ((guessedNumber == myNewNumber) && (numTry > 0)) {
+			output.println("Yay, you guessed the number!!");
+		}
+		if ((guessedNumber != myNewNumber) && (numTry == 0)) {
+			output.println("Sorry, you didn't guess the number in time! The number was: " + myNewNumber);
+		}
+		input.close();
+	}
+}

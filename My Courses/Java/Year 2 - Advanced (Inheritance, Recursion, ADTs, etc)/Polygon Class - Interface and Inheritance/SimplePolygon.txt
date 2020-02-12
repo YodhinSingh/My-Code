@@ -1,0 +1,276 @@
+
+package A1;
+
+import java.awt.geom.Point2D;
+import java.util.Scanner;
+import java.io.PrintStream;
+
+/**
+ * The class SimplePolygon implements the Polygon interface.
+ * 
+ * It is intended to be further extended by ConvexPolygon.
+ */
+public class SimplePolygon implements Polygon {
+
+	/********* protected fields ************************/
+
+	protected int n; // number of vertices of the polygon
+	protected Point2D.Double[] vertices; // vertices[0..n-1] around the polygon boundary
+
+	/********* protected constructors ******************/
+
+	/**
+	 * constructor used in the static factory method getNewPoly()
+	 * 
+	 * @param size number of edges (also vertices) of the polygon
+	 */
+	protected SimplePolygon(int size) {
+		n = size;
+		vertices = new Point2D.Double[size];
+	}
+
+	/** default no-parameter constructor 
+	 * 
+	 * creates a triangle with vertices [0,0], [1,0], [0,1]
+	 */
+	protected SimplePolygon() {
+		this(3);
+		vertices[0] = new Point2D.Double(0, 0);
+		vertices[1] = new Point2D.Double(1, 0);
+		vertices[2] = new Point2D.Double(0, 1);
+	}
+
+	/********* public getters & toString ***************/
+
+	/**
+	 * static factory method constructs and returns an unverified simple-polygon,
+	 * initialised according to user provided input data. Runs in O(n) time.
+	 * 
+	 * @return an unverified simple-polygon instance
+	 */
+	public static SimplePolygon getNewPoly() {
+		Scanner in = new Scanner(System.in);
+		PrintStream out = System.out;
+		out.println("Enter the number of sides 's' for the polygon followed by each of the vertices 'x' and 'y'");
+		out.println("separated by a single space. It should be in the format: s x y x y x y... ");
+		int size = in.nextInt();
+		SimplePolygon p = new SimplePolygon(size);
+		for (int i = 0; i < p.vertices.length; i++) {
+			double x = in.nextDouble();
+			double y = in.nextDouble();
+			p.vertices[i] = new Point2D.Double(x, y);
+		}
+		in.close();
+
+		return p;
+	}
+
+	/**
+	 * 
+	 * @return n, the number of edges (equivalently, vertices) of the polygon.
+	 */
+	public int getSize() {
+		return n;
+	}
+
+	/**
+	 * 
+	 * @param i index of the vertex.
+	 * @return the i-th vertex of the polygon.
+	 * @throws IndexOutOfBoundsException if {@code i < 0 || i >= n }.
+	 */
+	public Point2D.Double getVertex(int i) throws IndexOutOfBoundsException {
+		try {
+			return vertices[i];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new IndexOutOfBoundsException("Exception: i-th vertex is not in range.");
+		}
+	}
+
+	/**
+	 * @return a String representation of the polygon in O(n) time.
+	 */
+	@Override
+	public String toString() {
+		String coordinates = "";
+		for (int i = 0; i < n; i++) {
+			coordinates += "[" + vertices[i].getX() + " " + vertices[i].getY() + "]";
+			if (i != n - 1) {
+				coordinates += ", ";
+			}
+		}
+		return coordinates;
+	}
+
+	/************** utilities *********************/
+
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 * @param c three input points.
+	 * @return twice the signed area of the oriented triangle (a,b,c). Runs in O(1)
+	 *         time.
+	 */
+	public static double delta(Point2D.Double a, Point2D.Double b, Point2D.Double c) {
+		double one = a.getX() * (b.getY() - c.getY());
+		double two = a.getY() * (b.getX() - c.getX());
+		double three = b.getX() * c.getY() - b.getY() * c.getX();
+		return one - two + three;
+
+	}
+
+	protected static double deltaHelper(Point2D.Double a, Point2D.Double b, Point2D.Double c) {
+		double direction = delta(a, b, c);
+		if (direction == 0.0) {
+			return 0;
+		} else {
+			return (direction > 0) ? 1 : -1;
+		}
+
+	}
+
+	/**
+	 * @param a
+	 * @param b end points of line-segment (a,b).
+	 * @param c
+	 * @param d end points of line-segment (c,d).
+	 * @return true if closed line-segments (a,b) and (c,d) are disjoint. Runs in
+	 *         O(1) time.
+	 */
+	public static boolean disjointSegments(Point2D.Double a, Point2D.Double b, Point2D.Double c, Point2D.Double d) {
+
+		double l1 = deltaHelper(a, b, c);
+		double l2 = deltaHelper(a, b, d);
+		double l3 = deltaHelper(c, d, a);
+		double l4 = deltaHelper(c, d, b);
+
+		if (l1 != l2 && l3 != l4) {
+			return false;
+		}
+		else if (l1 == 0 && disjointSegmentsHelper(a, b, c) == true) {
+			return false;
+		}
+		else if (l2 == 0 && disjointSegmentsHelper(a, b, d) == true) {
+			return false;
+		}
+		else if (l3 == 0 && disjointSegmentsHelper(c, d, a) == true) {
+			return false;
+		}
+		else if (l4 == 0 && disjointSegmentsHelper(c, d, b) == true) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	protected static boolean disjointSegmentsHelper(Point2D.Double a, Point2D.Double b, Point2D.Double c) {
+		if (c.getX() <= Math.max(a.getX(), b.getX()) && c.getX() >= Math.min(a.getX(), b.getX())) {
+			if (c.getY() <= Math.max(a.getY(), b.getY()) && c.getY() >= Math.min(a.getY(), b.getY())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param i
+	 * @param j indices of two edges of the polygon.
+	 * @return true if the i-th and j-th edges of the polygon are disjoint. Runs in
+	 *         O(1) time.
+	 * @throws IndexOutOfBoundsException if i or j are outside the index range
+	 *                                   [0..n-1].
+	 */
+	public boolean disjointEdges(int i, int j) throws IndexOutOfBoundsException {
+		try {
+			return disjointSegments(vertices[i], vertices[(i + 1) % n], vertices[j], vertices[(j + 1) % n]);
+		} 
+		catch (ArrayIndexOutOfBoundsException e) {
+			throw new IndexOutOfBoundsException("Exception: i-th vertex is not in range.");
+		}
+
+	}
+
+	/**
+	 * This method verifies whether the claimed "simple-polygon" is indeed simple.
+	 * 
+	 * @return true if the polygon is simple. Runs in O(n^2) time.
+	 */
+	public boolean isSimple() {
+		if (n == 3 && deltaHelper(vertices[0], vertices[1], vertices[2]) == 0) {
+			return false;
+		}
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (disjointEdges(i, j) == false && (1 < j - i && j - i < n - 1)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/************ perimeter & area ***************/
+
+	/**
+	 * 
+	 * @return the sum of the edge lengths of the polygon. Runs in O(n) time.
+	 */
+	public double perimeter() {
+		double sum = 0;
+		for (int i = 0; i < n; i++) {
+			if (i == n - 1) {
+				sum += vertices[i].distance(vertices[0]);
+			} 
+			else {
+				sum += vertices[i].distance(vertices[i + 1]);
+			}
+		}
+		return sum;
+	}
+
+	/**
+	 * 
+	 * @return area of the polygon interior. Runs in O(n) time not counting the
+	 *         simplicity test.
+	 * @throws NonSimplePolygonException if the polygon is non-simple.
+	 */
+	public double area() throws NonSimplePolygonException {
+		if (isSimple() == false) {
+			throw new NonSimplePolygonException("Exception: This polygon is not Simple. No area calculated.");
+		}
+		double sum = 0;
+		Point2D.Double origin = new Point2D.Double(0, 0);
+		for (int i = 0; i < n; i++) {
+			sum += delta(origin, vertices[i], vertices[(i + 1) % n]);
+		}
+		return Math.abs(sum) * 0.5;
+	}
+
+	/**
+	 * 
+	 * @precondition Polygon must be simple, or result is not guaranteed to be
+	 *               correct.
+	 * @return boolean of if the point is within the polygon interior. Runs in O(n)
+	 *         time not counting the simplicity test.
+	 */
+	public boolean contains(Point2D.Double p) {
+		Point2D.Double FarPoint = new Point2D.Double(5000, 0);
+		int count = 0;
+		for (int i = 0; i < n; i++) {
+			if (disjointSegments(vertices[i], vertices[(i + 1) % n], p, FarPoint) == false) {
+				if (delta(vertices[i], vertices[(i + 1) % n], p) == 0) {
+					return (disjointSegmentsHelper(vertices[i], vertices[(i + 1) % n], p) == true);
+				}
+				if (delta(p, vertices[i], FarPoint) == 0 && disjointSegmentsHelper(p, FarPoint, vertices[i])) {
+					count--;
+				}
+				count++;
+			}
+
+		}
+		return (count % 2 != 0);
+	}
+
+}

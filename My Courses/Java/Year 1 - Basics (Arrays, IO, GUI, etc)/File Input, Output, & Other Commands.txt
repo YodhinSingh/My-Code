@@ -1,0 +1,157 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.Scanner;
+
+import type.lib.ToolBox;
+
+
+public class Question02 {
+
+	// tests to learn about File I/O and its functions
+
+	public static void main(String[] args) {
+		final String KEY_FOR_WORKING_DIRECTORY = "user.dir";
+		PrintStream output = System.out;
+
+		/*
+		 * Run this app and observe the output. From the output, you can see
+		 * that we can use the services of the System class to determine the
+		 * default working directory for the virtual machine.
+		 */
+
+		String path = System.getProperty(KEY_FOR_WORKING_DIRECTORY);
+		output.println(path);
+
+		/*
+		 * Building upon the statements above, construct a string that
+		 * corresponds to the pathname for the subdirectory called "someFiles".
+		 * This subdirectory is found within this project directory.
+		 * 
+		 * To create this pathname, begin with the path string above. Then, you
+		 * need to append a static field from the File class called "separator".
+		 * This field equals either "/" or "\" depending on whether the VM is
+		 * running on a unix-like system (include Mac OS X) or on a Windows-type
+		 * system.
+		 * 
+		 * After the separator, you need to add the name of the subdirectory.
+		 * Print the new pathname to the console.
+		 * 
+		 * NOTE: you may concatenate (join) strings together using the "+"
+		 * operator e.g. String name = "Bob"; String xStr = "there " + "was a ";
+		 * xStr = xStr + "man named " + name;
+		 * 
+		 * (you have done this before inside the println() method)
+		 */
+		String newPath = path + File.separator + "someFiles" + File.separator + "fileOne.txt";
+		output.println(newPath);
+
+		/*
+		 * Use the services of the File class to construct a File object that
+		 * corresponds to the directory (remember that the File class can be
+		 * used to encapsulate a file or a directory, either existing or
+		 * to-be-created).
+		 * 
+		 * Use the method getPath() on the instance to retrieve the String
+		 * representing the File object's pathname and print it to the console.
+		 */
+		File someFile1 = new File(path);
+		output.println(someFile1.getPath());
+
+		/*
+		 * Ask the File instance whether the pathname it encapsulates
+		 * corresponds to a pathname that exists on the file system. (Hint: find
+		 * a service for this in the File API). Print the result.
+		 */
+		output.println(someFile1.exists());
+
+		/*
+		 * Use the services of the File class to construct a File object that
+		 * corresponds to a pathname for a subdirectory called "someFiles2" that
+		 * is within this project directory (such a directory does not exist).
+		 * 
+		 * Use the method getPath() on the instance to retrieve the String
+		 * representation of the File object's pathname and print it to the
+		 * console.
+		 * 
+		 * Ask the second File instance whether the pathname it encapsulates
+		 * corresponds to a pathname that exists on the file system. Print the
+		 * result.
+		 */
+		File someFile2 = new File(path + File.separator + "someFiles2");
+		output.println(someFile2.getPath());
+		output.println(someFile2.exists());
+
+		/*
+		 * 
+		 * construct a pathname and file object corresponding to the actual file
+		 * that exists in the someFiles directory
+		 * 
+		 * output a message to the console indicating if the file is readable
+		 * 
+		 */
+		File someFile = new File(newPath);
+		output.println(someFile.getPath());
+		output.println("The file is readable: " + someFile.canRead());
+
+		/*
+		 * You notice that we previously have used the Scanner class to manage
+		 * access to standard input (text typed in from keyboard). A quick look
+		 * at the Scanner API (in java.util) will reveal that the Scanner class
+		 * can also be instantiated using a File object. i.e. We can connect to
+		 * a File, and read text data from the File
+		 * 
+		 * The following code creates a new instance of scanner, one that is
+		 * linked to and "opened" on the text file provided in someFiles
+		 * directory. The code is wrapped in an exception clause (for now you
+		 * dont need to worry about this, just know that the code to open and
+		 * access the contents of a file should go inside the try {} block (as
+		 * shown below)
+		 * 
+		 * The example grabs a full line of text from the file
+		 * 
+		 * Modify this code (and the text file - see the someFiles package in
+		 * the project), So that the file contains numeric values, and you read
+		 * those values into some variables of your liking (e.g. if you include
+		 * an int and a double in your file, then read them into two separate
+		 * variables using .nextInt() and .nextDouble() as you have done
+		 * previously with input from the keyboard.
+		 * 
+		 * This method provides a way you can pass variables to your program
+		 * from a file as opposed to prompting the user at runtime.
+		 * 
+		 */
+
+		Scanner inFile; // assumes you called your file object someFile
+						// (earlier)
+						// otherwise change the name of the someFile variable
+						// below
+
+		try {
+			inFile = new Scanner(someFile);
+
+			// code to do stuff with file contents - put in this block!!
+			output.println();
+			output.println("File contains: ");
+			while (inFile.hasNextLine()) {
+				if (inFile.hasNextInt()) {
+					output.println(inFile.nextInt());
+				} else if (inFile.hasNextFloat()) {
+					output.println(inFile.nextFloat());
+				} else if (inFile.hasNextDouble()) {
+					output.println(inFile.nextDouble());
+				} else if (inFile.hasNextLong()) {
+					output.println(inFile.nextLong());
+				} else {
+					output.println("Not a numeric value");
+					ToolBox.crash(inFile.hasNextLine(), "Program terminated.");
+				}
+			}
+
+		} catch (FileNotFoundException e) {
+			// nothing to do here
+			e.printStackTrace();
+		}
+
+	}
+}

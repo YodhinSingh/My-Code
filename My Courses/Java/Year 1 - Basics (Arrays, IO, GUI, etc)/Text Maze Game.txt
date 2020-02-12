@@ -1,0 +1,373 @@
+import java.util.Scanner;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Random;
+
+// Basic text maze game that generates a N*N size maze and puts obstacles randomly in it. Player uses WASD to move 1 space
+// at a time to get to randomized destination on other side of maze 
+
+public class Lab8Task2 {
+
+	public static final int MAZESIZE = 5; // you can change this to have MxN
+
+	public static char[][] Maze = new char [MAZESIZE][MAZESIZE]; 
+
+
+	public static int posX; // the current location of the character on the maze
+	public static int posY; // (posX,posY)
+	public static PrintStream out = System.out;
+	public static Scanner input = new Scanner(System.in); 
+	public static int xc= 0;
+	public static int yc = 0;
+	public static int move = 0;
+	public static String Sentinel = "q";
+	public static ArrayList <String> Movelist = new ArrayList<String>();
+	public static int undoer = 0;
+
+	public static boolean isFree(int locX, int locY) {
+		boolean Free = true;
+		if ( ((Maze[locX][locY] == 'X')) ) {
+			Free = false;
+		}
+		return Free;
+		// is true if the location on the Maze does not have an obstacle
+
+	}
+
+	public static void createMaze() {
+		for (int i =0; i < Maze.length; i++) {
+			for (int j = 0; j < Maze[0].length; j++){
+				if (i == 4 && j == 0){
+					Maze[i][j] = 'S';
+				}
+				else if (i == 0 && j == 3) {
+					Maze[i][j] = 'D';
+				}
+				else {
+					Maze[i][j] = '.';
+				}
+			}
+		 }
+		// this method will populate a 2D array representing the Maze
+		// using the characters “.” , “S” and “D”
+		// you may hard code (explicitly declare) your maze
+	}
+
+	public static void resetMaze() {
+		Random randloc = new Random();
+		
+		for (int randomizer = 0; randomizer < 5; randomizer++){
+			int starty = randloc.nextInt(5);
+			int endy = randloc.nextInt(5);
+			int myrandx = randloc.nextInt(5);
+			int myrandy = randloc.nextInt(5);
+			for (int j =0; j < Maze.length; j++) {
+					if (Maze[0][j] == 'D'){
+						Maze[0][j] = '.';
+						Maze[0][endy] = 'D';
+					}
+					if (Maze[4][j] == 'S'){
+						Maze[4][j] = '.';
+						Maze[4][starty] = 'S';
+					}	
+			}
+			
+			
+			
+			while ( (Maze[myrandx][myrandy] == 'S') || (Maze[myrandx][myrandy] == 'D') || (Maze[myrandx][myrandy] == 'X') ){
+				if ((myrandx > 3)){
+					myrandx = 0;
+				}
+				else if ((myrandy > 2)) {
+					myrandy = 0;
+				}
+				else{
+					myrandx = myrandx+1;
+					myrandy = myrandy+2;
+				}
+				
+			}
+			Maze[myrandx][myrandy] = 'X';
+		}
+		
+
+		// updates an existing maze, in this method, initialize all
+		// locations to “.”, then choose a random locations for “X” (use
+		// about 5 obstacles; and choose a random location for “S” and
+		// “D” respectively.
+	}
+
+	public static void showMaze() {
+		out.print("Maze = \n\n");
+		for (int i = 0; i < Maze.length; i++) {
+			out.print("\t\t\t");
+			for (int j = 0; j < Maze[0].length; j++) {
+				out.print(Maze[i][j] + "\t");
+			}
+			out.print("\n\n\n");
+		}
+
+		// outputs the maze to the screen (as shown in the
+		// descriptions above
+	}
+
+	public static void resetGame() {
+		for (int i = 0; i < Maze.length; i++) {
+			for (int j = 0; j < Maze[0].length; j++) {
+				if (Maze[i][j] == 'S') {
+					posY = j;
+					posX = i;
+					Maze[i][j] = 'O';
+				}
+			}
+
+		}
+		// this method will reset the character position to the start
+		// position (i.e. the position on the Maze denoted by ‘S’)
+		// to do this, you will have to search for that position in the
+		// array
+		// first, and when found, use the i,j coords to set posX,
+		// posY
+	}
+
+	public static void moveCharacter(String direction) {
+		if (direction.equals("W") || direction.equals("w")) {
+			for (int i = 0; i < Maze.length; i++) {
+				for (int j = 0; j < Maze[0].length; j++) {
+					if ((posX == i) && (posY == j) && (i != 0)) {
+						if (isFree(i - 1, j) == true) {
+							posX = i - 1;
+							posY = j;
+							Maze[i][j] = '.';
+							Maze[posX][posY] = 'O';
+							move = 1;
+							break;
+						}
+						else{
+							move = 5;
+						}
+					}
+
+					else if ((posX == i) && (posY == j) && (i == 0)){
+						move = 6;
+					}
+				}
+			}
+		}
+		if (direction.equals("X") || direction.equals("x")) {
+			int counter = 0;
+			for (int i = 0; i < Maze.length; i++) {
+				for (int j = 0; j < Maze[0].length; j++) {
+					if (counter == 0) {
+						if (posX == i && posY == j && (i != Maze.length - 1)) {
+							if (isFree(i + 1, j) == true) {
+								posX = i + 1;
+								posY = j;
+								Maze[i][j] = '.';
+								Maze[posX][posY] = 'O';
+								move = 2;
+								counter = 1;	
+							}
+							else{
+								move = 5;
+							}
+	
+						} else if ((posX == i) && (posY == j) && (i == Maze.length - 1)) {
+							move = 6;
+						}
+					}
+				}
+				
+			}
+		}
+		if (direction.equals("A") || direction.equals("a")) {
+			for (int i = 0; i < Maze.length; i++) {
+				for (int j = 0; j < Maze[0].length; j++) {
+					if (posX == i && posY == j && (j != 0)) {
+						if (isFree(i, j - 1) == true) {
+							posX = i;
+							posY = j - 1;
+							Maze[i][j] = '.';
+							Maze[posX][posY] = 'O';
+							move = 3;
+							break;
+						}
+						else{
+							move = 5;
+						}
+
+					} else if (posX == i && posY == j && (j == 0)) {
+						move = 6;
+					}
+				}
+			}
+		}
+		if (direction.equals("D") || direction.equals("d")) {
+			for (int i = 0; i < Maze.length; i++) {
+				for (int j = 0; j < Maze[0].length; j++) {
+					if (posX == i && posY == j && (j != Maze[0].length - 1)) {
+						if (isFree(i,j + 1) == true) {
+							posX = i;
+							posY = j + 1;
+							Maze[i][j] = '.';
+							Maze[posX][posY] = 'O';
+							move = 4;
+							break;
+						}
+						else{
+							move = 5;
+						}
+
+					} else if ((posX == i && posY == j && (j == Maze[0].length - 1))){
+						move = 6;
+					}
+				}
+			}
+		}
+
+		// based on a string
+		// representing the
+		// key pressed, move
+		// the
+		// character one position in the chosen direction if possible
+		// note, that if there is an obstacle at the next location or you
+		// are at the edge of the maze, you will not be able to move off
+		// the maze or to that location
+	}
+	
+	public static void undo(){
+		if (Movelist.isEmpty()){
+			undoer = 1;
+		}
+		else{
+			if (  Movelist.get(Movelist.size()-1).equals("W") || Movelist.get(Movelist.size()-1).equals("w")  ){
+				Movelist.remove(Movelist.size()-1);
+				moveCharacter("X");
+				
+			}
+			else if (  Movelist.get(Movelist.size()-1).equals("X") || Movelist.get(Movelist.size()-1).equals("x")  ){
+				Movelist.remove(Movelist.size()-1);
+				moveCharacter("W");
+			}
+			else if (  Movelist.get(Movelist.size()-1).equals("A") || Movelist.get(Movelist.size()-1).equals("a")  ){
+				Movelist.remove(Movelist.size()-1);
+				moveCharacter("D");
+			}
+			else if (  Movelist.get(Movelist.size()-1).equals("D") || Movelist.get(Movelist.size()-1).equals("d")  ){
+				Movelist.remove(Movelist.size()-1);
+				moveCharacter("A");
+			}
+		}
+	}
+
+	public static boolean isDestination(int x, int y) {
+		boolean done = false;
+		for (int i = 0; i < Maze.length; i++) {
+			for (int j = 0; j < Maze[0].length; j++) {
+				if (Maze[i][j] == 'D') {
+					xc = i;
+					yc = j;
+				}
+			}
+		}
+
+		if (x == xc && y == yc) {
+			done = true;
+		}
+		return done;
+
+		// // returns true if the
+		// // location specified by
+		// // x,y is the
+		// // destination
+		// // (i.e. has a ‘D’ in
+		// // it)
+	}
+
+	public static void main(String[] args) {
+		createMaze();
+		resetMaze();
+		showMaze();
+		out.println(">> Welcome <<");
+		out.println("Hit a key to start!");
+		out.println("Hit 'z' to undo your move.");
+		out.println("Hit 'q' to quit after the game has started.");
+		out.println("______________________________________________________________________");
+		String answer = "";;
+		String response = input.next();
+		resetGame();
+		int Movecounter = 0;
+		while ((isDestination(posX, posY) == false) && !(answer.equals(Sentinel))) {
+			String moveanswer = " ";
+			showMaze();
+			if (Movecounter == 0){
+				out.println("Move " + Movecounter + ": You are at the start position");
+			}
+			else {
+				if (move == 1) {
+					moveanswer = "moved up";
+				}
+				else if (move == 2) {
+					moveanswer = "moved down";
+				}
+				else if (move == 3) {
+					moveanswer = "moved left";
+				}
+				else if (move == 4) {
+					moveanswer = "moved right";
+				}
+				else if (move == 5) {
+					out.println("Sorry, that way is blocked!");
+					moveanswer = "blocked";
+				}
+				else {
+					out.println("You are on the edge. You cannot leave the grid.");
+					moveanswer = "blocked";
+				}
+				out.println("Move " + Movecounter + ": " + moveanswer);
+			}
+			if (undoer == 1){
+				out.println("You have not made any moves yet. Nothing to undo.");
+				undoer = 0;
+			}
+			out.println("Which direction would you like to move");
+			out.println("(W|X|A|D = up|down|left|right)?");
+			answer = input.next();
+			if (answer.equals("Z") || answer.equals("z")) {
+				undo();
+			}
+			else {
+				Movelist.add(answer);
+				moveCharacter(answer);
+			}
+			out.print(Movelist);
+			Movecounter++;
+				
+		}
+		if (!(answer.equals(Sentinel))){
+			out.println("Congratulations, you reached the destination!");
+		}
+		else {
+			out.println("You gave up. Better luck next time...");
+		}
+		
+
+		// in your main, you will write a basic game loop.
+		// You will need a while loop here, that runs the game until
+		// a “q” is pressed.
+
+		// show the Maze first, then
+		// use Scanner to begin the game (accept any key as input)
+		// inside the game, make a loop that
+		// asks for a new key press
+		// check if next location is free
+		// if free, then move character position
+		// update Maze to show this move
+		// if the location moved to is the destination
+		// game done, print final message
+		// cause loop to quit
+
+	}
+
+}
+

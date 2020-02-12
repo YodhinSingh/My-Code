@@ -1,0 +1,67 @@
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+
+// Hangman game where computer picks a word from a list and presents it to user to solve
+
+public class Lab8 {
+
+	public static void main(String[] args) throws IOException {
+		PrintStream output = System.out;
+		Scanner input = new Scanner(System.in);
+
+		String[] dictionary = { "banana", "fruit", "purpose", "red", "colour", "story", "lie", "truth", "life",
+				"answer", "question", "opposite", "middle", "start", "end", "lion", "secret", "alien", "future",
+				"exotic", };
+		ArrayList<String> tochoose = new ArrayList<String>();
+		
+		for (int i =0; i < dictionary.length; i++){
+			tochoose.add(dictionary[i]);
+		}
+		Collections.shuffle(tochoose);
+		String word = tochoose.get(0);
+		String answer = "";
+		int counter = 0;
+		char[] chosenword = new char[word.length()];
+
+		for (int i = 0; i < chosenword.length; i++) {
+			chosenword[i] = '-';
+		}
+		output.println(
+				"Alright, I have chosen a word from a list. Can you guess it? Choose a letter which could be in the word. Here are the dashes.");
+		output.println(chosenword);
+
+		while (answer != word) {
+			counter = 0;
+			output.println("Your guess?");
+			String guess = input.next();
+			int temp = 0;
+			char guess2 = (char) guess.charAt(0);
+			for (int i = 0; i < word.length(); i++) {
+				if (guess2 == word.charAt(i)) {
+					chosenword[i] = word.charAt(i);
+					temp = 1;
+				}
+			}
+			if (temp == 0) {
+				output.println("That is not part of the word. Try Again.");
+			}
+			for (int i = 0; i < chosenword.length; i++) {
+				if (chosenword[i] == word.charAt(i)) {
+					counter += 1;
+				}
+				if (counter == word.length()) {
+					output.println("Congratulations, you have guessed the word!");
+					answer = word;
+				}
+			}
+			output.println(chosenword);
+
+		}
+
+		input.close();
+	}
+}

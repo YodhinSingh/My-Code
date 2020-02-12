@@ -1,0 +1,72 @@
+import java.io.PrintStream;
+import java.util.Scanner;
+
+public class Question04 {
+
+	public static void main(String[] args) {
+		PrintStream output = System.out;
+		Scanner input = new Scanner(System.in);
+
+		/*
+		 * add a sentinel that will
+		 * prematurely end the sum and add calculation
+		 * 
+		 * e.g. if N=8, and the 5th number is the sentinel (escape character)
+		 * then only compute the sum of the numbers entered up to that point
+		 * i.e. only 4 previous numbers would be calculated
+		 * 
+		 * Compute the sum, and average of all the valid integers entered (up
+		 * until a sentinel is encountered) then output the number of integers
+		 * encountered before the sentinel, their sum and their average (format
+		 * average to 3 decimal places).
+		 * 
+		 * e.g. user enters N=7; (lets assume sentinel is 'S' user then enters:
+		 * 3 5 -16 S 50 13 4 -3 -20 (this can be one at a time, or as a single
+		 * line of input)
+		 * 
+		 * output would be: integers processed = 3, sum = -8 , average = -2.667
+		 */
+		final String SENTINEL = "S";
+		output.println("Choose a positive Integer N.");
+		int NValue = input.nextInt();
+		
+		while (NValue <= 0) {
+			output.println("Incorrect number. Choose an integer that is greater than zero.");
+			NValue = input.nextInt();
+			}
+		float storednums = 0;
+		int secondnum = 0;
+		float numchoice = 0;
+		float abortnum = 0;
+		String numchoice2 = "";
+		while (NValue > secondnum) {
+			output.println("Okay now choose a number. To abort, type 'S'");
+			while (!(input.hasNextInt())) {
+				
+				if (input.hasNext(SENTINEL)) {
+					secondnum = NValue +1;
+					break;
+				}
+				else {
+					output.println("Incorrect value. Choose an integer.");
+					numchoice2 = input.next();
+					continue;
+				}
+			}
+			if (secondnum > NValue) {
+				break;
+			}
+			numchoice = input.nextInt();
+			storednums = storednums + numchoice;
+			secondnum++;
+			abortnum++;
+		}
+		float average = storednums/abortnum;
+		int sum = (int) (storednums);
+		output.println("The Sum is: "+ sum);
+		output.println("The Average is: " + average);
+		input.close();
+
+	}
+}
+

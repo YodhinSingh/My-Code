@@ -1,0 +1,155 @@
+import java.io.PrintStream;
+import java.util.Scanner;
+
+
+public class Question01
+{
+
+	public static void main(String[] args)
+	{
+		PrintStream output = System.out;
+		Scanner input = new Scanner(System.in);
+
+		// Array method test where user chooses what to do based on menu and then after inputting numbers
+		// the system will calculate the desired result
+
+		final int ItemList = 10;
+		int [] integerarray = new int [ItemList];
+		for (int i=0; i < ItemList; i++) {
+			integerarray[i] = (int) (Math.random() * Integer.MAX_VALUE);
+		}
+		output.println("Choose a simple array method to run: ");
+		output.println("1. Create new array ");
+		output.println("2. min ");
+		output.println("3. max ");
+		output.println("4. range ");
+		output.println("5. mean ");
+		output.println("6. sum of even values ");
+		int answer = input.nextInt();
+		int answer2;
+		int nextcheck;
+		int [] finarray;
+		if (answer == 1){
+			output.println("Create your array: ");
+			output.println("Choose the number of items in your array");
+			int num = input.nextInt();
+			int [] testarray = new int[num];
+			for (int i = 0; i < num; i++){
+				output.println("Choose your item");
+				String choice = input.next();
+				testarray[i] = Integer.parseInt(choice);
+			}
+			finarray = testarray;
+			output.println("Choose a simple array method to run: ");
+			output.println("1. min ");
+			output.println("2. max ");
+			output.println("3. range ");
+			output.println("4. mean ");
+			output.println("5. sum of even values ");
+			answer2 = input.nextInt();
+			answer = answer2;
+			nextcheck = 1;
+		}
+		else  {
+			output.println("Your array was: ");
+			showArray(integerarray);
+			System.out.println("\n");
+			finarray = integerarray;
+			nextcheck = 1;
+			answer = answer-1;
+			
+		}
+		
+		
+		if (nextcheck == 1) {
+		if (answer == 1){
+			min(finarray);
+		}
+		if (answer == 2){
+			output.println(max(finarray));
+		}
+		if (answer == 3){
+			output.println(range(finarray));
+		}
+		if (answer == 4){
+			output.println(mean(finarray));
+		}
+		if (answer == 5){
+			output.println(sumEven(finarray));
+		}
+		}
+		
+		
+//		showArray(integerarray);
+//		System.out.println(" ");
+//		min(integerarray);
+//		System.out.println(max(integerarray));
+//		System.out.println(" ");
+//		System.out.println(range(integerarray));
+//		System.out.println(" ");
+//		System.out.println(mean(integerarray));
+//		System.out.println(" ");
+//		System.out.println(sumEven(integerarray));
+		input.close();
+	}
+	
+	public static void showArray(int [] intarray){
+		for (int i=0; i < intarray.length; i++) {
+			System.out.println(intarray[i]);
+		}
+	}
+	public static void min(int [ ] myArray) {
+		int minValue = myArray[0];
+		for (int i = 0; i < myArray.length; i++) {
+			if (minValue > myArray[i]) {
+				minValue = myArray[i];
+			}
+		}
+		System.out.println(minValue);
+	}
+	public static int max(int [ ] myArray) {
+		int maxValue = myArray[0];
+		for (int i = 0; i < myArray.length; i++) {
+			if (maxValue < myArray[i]) {
+				maxValue = myArray[i];
+			}
+		}
+		return maxValue;
+	}
+	public static int range(int [ ] myArray) {
+		int maxValue = myArray[0];
+		int minValue = myArray[0];
+		int range;
+		for (int i = 0; i < myArray.length; i++) {
+			if (maxValue < myArray[i]) {
+				maxValue = myArray[i];
+			}
+			if (minValue > myArray[i]) {
+				minValue = myArray[i];
+			}
+		}
+		range = maxValue - minValue;
+		return range;
+	}
+	public static double mean(int [ ] myArray) { 
+		double sum = 0;
+		double mean = 0;
+		for (int i = 0; i < myArray.length; i++) {
+			sum = sum + myArray[i];
+		}
+		mean = sum/myArray.length;
+		return mean;
+	}
+	public static int sumEven(int [ ] myArray) { 
+		int sum = 0;
+		for (int i = 0; i < myArray.length; i++) {
+			if (myArray[i] % 2 == 0) {
+			sum = sum + myArray[i];
+			}
+		}
+		return sum;
+	}
+	
+	
+}
+

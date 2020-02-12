@@ -1,0 +1,225 @@
+
+package A2;
+
+import java.util.Stack;
+
+/**
+ * This class is intended to implement the basic methods of the
+ * deque interface using stacks and make a ADT.
+ */
+public class NewDeque<E> {
+	
+	/********* private fields ************************/
+	 private Stack<E> items;
+	 private Stack<E> temp;
+	
+	/********* default no parameter constructor ************************/
+	public NewDeque(){
+		items = new Stack<E>();
+		temp = new Stack<E>();
+	}
+	
+	/********* main method to test the methods of the class ************************/
+	public static void main(String[] args) {
+		NewDeque<Integer> f = new NewDeque<Integer>();
+		System.out.println("**************************************************");
+		System.out.println("Methods Test:");
+		
+		System.out.println("Size of list is: " + f.size());
+		System.out.println("This list is Empty: " + f.isEmpty());
+		System.out.println("The String representation of the list is: " + f.toString());
+		f.addLast(new Integer(5));
+		System.out.println("Add element 5 last: " + f.toString());
+		f.addFirst(new Integer(3));
+		System.out.println("Add element 3 first: " + f.toString());
+		f.addFirst(new Integer(7));
+		System.out.println("Add element 7 first: " + f.toString());
+		System.out.println("The String representation of the list is: " + f);
+		System.out.println("First Element is: " + f.first());
+		System.out.println("The last element removed: " + f.removeLast());
+		System.out.println("The String representation of the list is: " + f.toString());
+		System.out.println("Size of list is: " + f.size());
+		System.out.println("The last element removed: " + f.removeLast());
+		System.out.println("The first element removed: " + f.removeFirst());
+		f.addFirst(new Integer(6));
+		System.out.println("Add element 6 first: " + f.toString());
+		System.out.println("Last Element is: " + f.last());
+		f.addFirst(new Integer(8));
+		System.out.println("Add element 8 first: " + f.toString());
+		System.out.println("This list is Empty: " + f.isEmpty());
+		System.out.println("Last Element is: " + f.last());
+		System.out.println("The String representation of the list is: " + f.toString());
+		System.out.println("The first element removed: " + f.removeFirst());
+		System.out.println("The first element removed: " + f.removeFirst());
+		System.out.println("The first element removed: " + f.removeFirst());
+		System.out.println("The last element removed: " + f.removeLast());
+		System.out.println("The String representation of the list is: " + f.toString());
+		
+		System.out.println("\n");
+		
+		Integer q = new Integer(1);
+		System.out.println("This list is Empty: " + f.isEmpty());
+		System.out.println("Size of list is: " + f.size());
+		for (int i = 0; i < 5; i++) {
+			f.addFirst(q);
+			System.out.println("Add element " + q + " first: " + f.toString());
+			q++;
+		}
+		q = new Integer(0);
+		for (int i = 0; i < 11; i++) {
+			f.addLast(q);
+			System.out.println("Add element " + q + " last: " + f.toString());
+			q--;
+		}
+		System.out.println("Size of list is: " + f.size());
+		System.out.println("This list is Empty: " + f.isEmpty());
+		System.out.println("**************************************************");
+	}
+	
+	/**
+	 * This method determines the size of the stack.
+	 * 
+	 * @return the size of the stack.
+	 */
+	public int size (){
+		return items.size();
+	}
+	
+	/**
+	 * This method determines if the stack is empty or not.
+	 * 
+	 * @return boolean on whether the stack is empty.
+	 */
+	public boolean isEmpty() {
+		return items.isEmpty();
+	}
+	
+	/**
+	 * This method shows the first element in the stack.
+	 * 
+	 * @return the first element in the stack or null if the stack is empty.
+	 */
+	public E first() {
+		if (isEmpty()) {
+			return null;
+		}
+		return reverse(null, 3);
+	}
+	
+	/**
+	 * This method shows the last element in the stack.
+	 * 
+	 * @return the last element in the stack or null if the stack is empty.
+	 */
+	public E last() {
+		if (isEmpty()) {
+			return null;
+		}
+		E value = items.pop();
+		items.push(value);
+		return value;
+	}
+	
+	/**
+	 * This method adds an element to the front of the stack.
+	 * 
+	 * @param e element to be inserted.
+	 */
+	public void addFirst(E e) {
+		reverse(e, 1);
+	}
+	
+	/**
+	 * This method adds an element to the end of the stack.
+	 * 
+	 * @param e element to be inserted.
+	 */
+	public void addLast(E e) {
+		items.push(e);	
+	}
+	
+	/**
+	 * This method removes the first element in the stack.
+	 * 
+	 * @return the first element in the stack or null if the stack is empty.
+	 */
+	public E removeFirst() {		
+		if (isEmpty()) {
+			return null;
+		}
+		return reverse(null, 2);
+	}
+	
+	/**
+	 * This method removes the last element in the stack.
+	 * 
+	 * @return the last element in the stack or null if the stack is empty.
+	 */
+	public E removeLast() {
+		if (isEmpty()) {
+			return null;
+		}
+		return items.pop();
+	}
+ 	
+	/**
+	 * This private method performs 1 of 3 tasks: add an element to the front the stack
+	 * 									  remove the element at the front of the stack 
+	 * 									  view the first element in the stack
+	 * 
+	 * @param e element to be inserted. (null if task does not require it)
+	 * @param action determines what to do: 1 adds the element e at the front
+	 * 										2 removes the first element
+	 * 										3 creates a copy of the first element
+	 * 
+	 * @return null if parameter action is 1, the first element value if the action is 2 or 3.
+	 */
+	private E reverse(E e, int action) {
+		E value = null;
+		while (!items.isEmpty()) {
+			temp.push(items.pop());
+		}
+		if (action == 1) {
+			items.push(e);
+		}
+		else if (action == 2) {
+			value = temp.pop();
+		}
+		else {
+			value = temp.pop();
+			temp.push(value);
+		}
+		while (!temp.isEmpty()) {
+			items.push(temp.pop());
+		}
+		return value;
+	}
+	
+	/**
+	 * This method creates a string representation of the stack.
+	 * 
+	 * @return the string of the stack with the elements. null if stack is empty.
+	 */
+ 	public String toString() {
+ 		if (items.isEmpty()) {
+ 			return "[]";
+ 		}
+ 		StringBuilder output = new StringBuilder();
+ 		output.append("[");
+ 		while (!items.isEmpty()) {
+			temp.push(items.pop());
+		}
+ 		while (!temp.isEmpty()) {
+ 			E value = temp.pop();
+ 			output.append(value + ", ");
+			items.push(value);
+		}
+		output.deleteCharAt(output.lastIndexOf(","));
+		output.deleteCharAt(output.lastIndexOf(" "));
+		output.append("]");
+		return output.toString();
+	}
+	
+	
+	
+}

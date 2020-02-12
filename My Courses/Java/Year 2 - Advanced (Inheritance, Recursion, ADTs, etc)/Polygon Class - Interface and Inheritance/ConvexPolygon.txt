@@ -1,0 +1,167 @@
+
+package A1;
+
+import java.awt.geom.Point2D;
+import java.io.PrintStream;
+import java.util.Scanner;
+
+/**
+ * The class ConvexPolygon extends SimplePolygon.
+ * 
+ */
+public class ConvexPolygon extends SimplePolygon {
+
+	/**
+	 * constructor used in the static factory method getNewPoly()
+	 * 
+	 * @param size number of edges (also vertices) of the polygon
+	 */
+	protected ConvexPolygon(int size){
+		super(size);
+	}
+	
+	/** default no-parameter constructor 
+	 * 
+	 * creates a triangle with vertices [0,0], [1,0], [0,1]
+	 */
+	
+	protected ConvexPolygon() {
+		super();
+	}
+	
+	
+	/**
+	 * static factory method constructs and returns an unverified convex-polygon,
+	 * initialised according to user provided input data. Runs in O(n) time.
+	 * 
+	 * @return an unverified convex-polygon instance
+	 */
+	public static ConvexPolygon getNewPoly() {
+		Scanner in = new Scanner(System.in);
+		PrintStream out = System.out;
+		out.println("Enter the number of sides 's' for the polygon followed by each of the vertices 'x' and 'y'");
+		out.println("separated by a single space. It should be in the format: s x y x y x y... ");
+		int size = in.nextInt();
+		ConvexPolygon p = new ConvexPolygon(size);
+		for (int i = 0; i < p.vertices.length; i++) {
+			double x = in.nextDouble();
+			double y = in.nextDouble();
+			p.vertices[i] = new Point2D.Double(x, y);
+		}
+		in.close();
+
+		return p;
+	}
+	
+	
+	
+	/**
+	 * @precondition Polygon must be simple, or correctness of method is not guaranteed.
+	 * 
+	 * This method verifies whether the claimed "convex-polygon" is indeed convex.
+	 * 
+	 * @return boolean of whether the polygon is convex.
+	 */
+	public boolean isConvex() {
+		double direction = deltaHelper(vertices[0], vertices[(vertices.length-1)/2], vertices[vertices.length-1]);
+		
+		for (int i = 0; i < n; i++) {
+			double newDirection = deltaHelper(vertices[i], vertices[(i+1) % n], vertices[(i+2) % n]);
+			if (direction != newDirection && newDirection != 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @precondition Polygon must be simple, or correctness of method is not guaranteed.
+	 * 
+	 * @return boolean of whether the point is inside the polygon. If the polygon is convex
+	 * then it will perform the overridden contains method, else it will perform the
+	 * SimplePolygon contains method.
+	 */
+	@Override
+	public boolean contains(Point2D.Double p) {
+		if (isConvex() == true) {
+			return containsHelper(p, 0, vertices.length-1);			
+		}
+		else {
+			return super.contains(p);
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * This is a helper method to see if the point p is contained inside a triangle defined
+	 * by the parameters p1,p2,p3.
+	 * 
+	 * @return boolean of whether the point is inside the triangle.
+	 */
+	private boolean containsTriangle (Point2D.Double p, Point2D.Double p1, Point2D.Double p2, Point2D.Double p3)
+	{
+		double l1 = deltaHelper(p, p1, p2);
+	    double l2 = deltaHelper(p, p2, p3);
+	    double l3 = deltaHelper(p, p3, p1);
+
+	    boolean version1  = (l1 <= 0) && (l2 <= 0) && (l3 <= 0);
+	    boolean version2 = (l1 >= 0) && (l2 >= 0) && (l3 >= 0);
+
+	    return (version1 || version2);
+	}
+	
+	/**
+	 * 
+	 * This is a helper method which actually does the contains method using more
+	 * parameters in a recursive style. Based upon the delta of the current range
+	 * either one side changes, or the other.
+	 * Each time the polygon is 'cut' in half until it can come close to a triangle
+	 * in which case it would call the containsTriangle helper method.
+	 * 
+	 * @return boolean of whether the point is inside the triangle.
+	 */
+	private boolean containsHelper(Point2D.Double p, int v1, int v2) {
+		double direction = deltaHelper(vertices[0], vertices[(vertices.length-1)/2], vertices[vertices.length-1]);
+		int middle = (int) Math.ceil((v1 + v2) / 2.0);
+		double line = deltaHelper(p, vertices[0], vertices[middle]);
+		if (direction > 0) {
+			if (Math.abs(v1-v2) == 1) {
+				return containsTriangle(p, vertices[0], vertices[v1], vertices[v2]);
+			}
+			else {
+				
+				if(line == 0) {
+					return disjointSegmentsHelper(vertices[0], vertices[middle], p);
+				}
+				else if (line < 0) {
+					v2 = middle;
+				}
+				else {
+					v1 = middle;
+				}
+				return containsHelper(p, v1, v2);
+			}
+		}
+		else {
+			if (Math.abs(v1-v2) == 1) {
+				return containsTriangle(p, vertices[0], vertices[v1], vertices[v2]);
+			}
+			else {
+				if(line == 0) {
+					return disjointSegmentsHelper(vertices[0], vertices[middle], p);
+				}
+				else if (line < 0) {
+					v1 = middle;
+				}
+				else {
+					v2 = middle;
+				}
+				return containsHelper(p, v1, v2);
+				
+			}
+		}
+	}
+	
+}

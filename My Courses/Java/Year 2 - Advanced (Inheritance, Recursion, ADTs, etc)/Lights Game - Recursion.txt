@@ -1,0 +1,201 @@
+
+package A2;
+
+import java.lang.StringBuilder;
+
+/**
+ * This class creates an array of lights and performs the task of
+ * turning them all on or off while following these set of rules:
+ * The first light can be turned on or off any time. Each of the other 
+ * lights can be turned on or off only when the preceding light is on 
+ * and all other lights before it are off. 
+ */
+public class Lights {
+
+	/********* private fields ************************/
+	private int[] lights;
+	
+	/**
+	 * Constructor with parameters. Makes a list of lights according to user input.
+	 * 
+	 * @param n total number of lights to be part of the list.
+	 * @param s boolean value to determine if lights are on or off: 
+	 * 			True = on. False = off.
+	 */
+	public Lights(int n, boolean s) {
+		lights = new int[n];
+		if (s) {
+			for (int i = 0; i < n; i++) {
+				lights[i] = 1;
+			}
+		}
+	}
+	
+	/**
+	 * Default no parameter constructor. Makes a list of 3 lights that are on.
+	 */
+	public Lights() {
+		lights = new int[3];
+		lights[0] = 1;
+		lights[1] = 1;
+		lights[2] = 1;
+	}
+	
+	/********* main method to test the turnOff method ************************/
+	public static void main(String[] args) {
+		
+		/* There are 3 parts to this tester, one for turnOff, one for turnOn,
+		 * and finally for flipSwitches. Currently flipSwitches is commented
+		 * out since it performs the same task as turnOff. turnOn is also
+		 * commented out so it is easier to read the console for turnOff.
+		 * If you wish to see the other parts, simply comment out the current
+		 * part, and uncomment the desired part. To change the number of lights
+		 * change the value of 'n'.
+		 */
+		
+		/********* change n for number of lights ************************/
+		int n = 5;
+		
+		/********* Part 1 ************************/
+		Lights k = new Lights(n, false);
+		k.turnOff(n);
+	
+		/********* Part 2 ************************/
+//		Lights k = new Lights(n, false);
+//		k.turnOn(n);
+				
+		/********* Part 3 ************************/	
+//		k.flipSwitches(n, true);
+//		System.out.println("**************************************************");
+//		k.flipSwitches(n, false);
+		
+	}
+	
+	
+	/**
+	 * @Precondition: lights 1 .. n are all currently on.
+	 * @Postcondition: lights 1 .. n are all switched off.
+	 * 
+	 * @param n total number of lights to be turned off.
+	 */
+	public void turnOff(int n) {
+		if (n != 0 && n == lights.length) {
+			System.out.println(toString() + "\t\t" + n + " Lights ON initially");
+			turnOffHelper(n);
+		}
+	}
+	
+	private void turnOffHelper(int n) {
+		if (n == 1) {
+			lights[0] = 0;
+			System.out.println(toString() + "\t\tTurn OFF light 1");
+		}
+		else {
+			if (n > 2) {
+				turnOffHelper(n - 2);
+			}
+			lights[n-1] = 0;
+			System.out.println(toString() + "\t\tTurn OFF light " + n);
+			if (n > 2) {
+				turnOnHelper(n - 2);	
+			}
+			turnOffHelper(n - 1);
+		}
+	}
+	
+	
+	/**
+	 * @Precondition: lights 1 .. n are all currently off.
+	 * @Postcondition: lights 1 .. n are all switched on.
+	 * 
+	 * @param n total number of lights to be turned on.
+	 */
+	public void turnOn(int n) {
+		if (n != 0 && n == lights.length) {
+			System.out.println(toString() + "\t\t" + n + " Lights OFF initially");
+			turnOnHelper(n);
+		}
+	}
+	
+
+	private void turnOnHelper(int n) {
+		if (n == 1) {
+			lights[0] = 1;
+			System.out.println(toString() + "\t\tTurn ON light 1");
+		}
+		else {
+			turnOnHelper(n-1);
+			if (n > 2) {			
+				turnOffHelper(n -2);
+			}
+			lights[n-1] = 1;
+			System.out.println(toString() + "\t\tTurn ON light " + n);
+			if (n > 2) {
+				turnOnHelper(n -2);
+			}
+		}
+	}
+	
+	
+	/**
+	 * This method creates a string representation of the list of lights.
+	 * 
+	 * @return the string of the list of lights in their current state. 
+	 */
+ 	public String toString() {
+		StringBuilder output = new StringBuilder();
+		for (int i = 0; i < lights.length; i++) {
+			output.append(lights[i] + " ");
+		}
+		int j = output.lastIndexOf(" ");
+		output.deleteCharAt(j);
+		return output.toString();
+	}
+ 	
+ 	
+ 	
+ 	
+	/**
+	 * @Precondition If param s is true: lights 1 .. n are all currently on.
+	 * 				 If param s is false: lights 1 .. n are all currently off.
+	 * @Postcondition If param s is true: lights 1 .. n are all switched off.
+	 * 				  If param s is false: lights 1 .. n are all switched on.
+	 * 
+	 * @param n total number of lights to be turned on or off.
+	 * @param s boolean value to determine if lights switched on or off: 
+	 * 			True = turn off. False = turn on.
+	 */
+ 	public void flipSwitches(int n, boolean s) {
+ 		if (n != 0 && n == lights.length) {
+ 			String d = (s == true)? "ON": "OFF";
+ 			System.out.println(toString() + "\t\t" + n + " Lights " + d + " initially");
+ 			flipSwitchesHelper(n,s);
+ 		}
+	}
+	
+	private void flipSwitchesHelper(int n, boolean s) {
+		int value = (s == true)? 0 : 1;
+		String d = (s == true)? "OFF": "ON";
+		if (n == 1) {
+			lights[0] = value;
+			System.out.println(toString() + "\t\tTurn " + d + " light 1");
+		}
+		else {
+			if (value == 1) {
+				flipSwitchesHelper(n-1, false);
+			}
+			if (n > 2) {
+				flipSwitchesHelper(n-2, true);
+			}
+			lights[n-1] = value;
+			System.out.println(toString() + "\t\tTurn " + d + " light " + n);
+			if (n > 2) {
+				flipSwitchesHelper(n-2, false);
+			}
+			if (value == 0) {
+				flipSwitchesHelper(n-1, true);
+			}
+		}
+	}
+
+}

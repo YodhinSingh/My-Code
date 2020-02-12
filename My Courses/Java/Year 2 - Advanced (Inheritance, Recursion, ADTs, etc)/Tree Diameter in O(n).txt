@@ -1,0 +1,106 @@
+
+package A3;
+
+// Make an algorithm for a node based tree that figures out the diameter that runs in O(n) time
+
+public class Problem2 <E extends Comparable<E>> {
+	
+    static public class Node<E extends Comparable<E>>{ 
+        Node<E> left; 
+        Node<E> right; 
+        E key; 
+
+        Node(E key){ 
+            this.key = key; 
+            left = null; 
+            right = null; 
+        } 
+    } 
+    
+    private static class Result 
+    { 
+        int result = 0; 
+    } 
+      
+    protected int height(Node<E> n, Result r)  
+    {  
+        if (n == null) { 
+            return 0;  
+        }
+        int heightL = height(n.left, r);  
+        int heightR = height(n.right, r); 
+        r.result = Math.max(heightL + heightR, r.result);  
+      
+        return 1 + Math.max(heightL, heightR);  
+    }  
+
+    public int diameter(Node<E> n)  
+    {  
+        if (n == null)  {
+            return 0; 
+        }
+        Result r = new Result(); 
+        height(n, r);  
+        return r.result;  
+    }  
+    
+    
+	
+	public static void main(String[] args) {
+		
+		Problem2<Integer> p = new Problem2<Integer>();
+		
+        Node<Integer> root = new Node<Integer>(1);
+        
+	// Can uncomment these to create a tree to test/use
+
+//        root.left = new Node<Integer>(2); 
+//        root.left.left = new Node<Integer>(4); 
+//        root.left.right = new Node<Integer>(5); 
+//        root.left.left.left = new Node<Integer>(8);
+//        root.left.left.right = new Node<Integer>(9);
+//        
+//        root.right = new Node<Integer>(3);
+//        root.right.left = new Node<Integer>(6); 
+//        root.right.right = new Node<Integer>(7);
+//        root.right.left.left = new Node<Integer>(10);
+//        root.right.right.left = new Node<Integer>(11);
+//        root.right.right.right = new Node<Integer>(12);
+//        root.right.right.right.left = new Node<Integer>(13);
+        
+//        root.left = new Node<Integer>(2); 
+//        root.left.left = new Node<Integer>(4); 
+//        root.left.right = new Node<Integer>(5); 
+//        root.left.right.left = new Node<Integer>(7);
+//        root.left.right.right = new Node<Integer>(8);
+//        
+//        root.right = new Node<Integer>(3);
+//        root.right.right = new Node<Integer>(6); 
+//        root.right.right.left = new Node<Integer>(9);
+//        root.right.right.left.left = new Node<Integer>(10);
+//        root.right.right.left.right = new Node<Integer>(11);
+//        root.right.right.left.left.left = new Node<Integer>(12);
+//        root.right.right.left.left.right = new Node<Integer>(13);
+        
+//      root.left = new Node<Integer>(2); 
+//      root.left.left = new Node<Integer>(4); 
+//      root.left.left.left = new Node<Integer>(7);
+//      root.left.left.right = new Node<Integer>(8);
+//      root.left.left.right.left = new Node<Integer>(10);
+//      root.left.left.right.left.left = new Node<Integer>(13);
+//      root.left.left.right.left.right = new Node<Integer>(14);
+//      root.left.right = new Node<Integer>(5);
+//      root.left.right.right = new Node<Integer>(9);
+//      root.left.right.right.left = new Node<Integer>(11);
+//      root.left.right.right.right = new Node<Integer>(12);
+//      root.left.right.right.right.right = new Node<Integer>(15);
+//      
+//      root.right = new Node<Integer>(3);
+//      root.right.right = new Node<Integer>(6); 
+        
+      
+      System.out.println(p.diameter(root));
+
+	}
+
+}
